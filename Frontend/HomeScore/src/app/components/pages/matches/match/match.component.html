@@ -1,0 +1,169 @@
+<div *ngIf="isLoading">
+    <loader [type]="'basic'"></loader>
+</div>
+<p-card *ngIf="match !== undefined && !isLoading">
+    <automated-highlighting *ngIf="authenticationResponse.isUserAuthenticated && matchStatus != 'Full time'"></automated-highlighting>
+    <div class="flex flex-column">
+    <div class="grid">
+        <div class="col-3">
+            <div class="p-3 h-full">
+                <div class="shadow-2 p-3 h-full flex flex-column align-items-center surface-card" style="border-radius: 6px">
+                    <div *ngIf="homeClubImage !== null">
+                        <p-image
+                          [src]="homeClubImage"
+                          width="120px"
+                          [preview]="true"
+                        ></p-image>
+                      </div>
+                      <div *ngIf="homeClubImage === undefined">
+                        <p-image
+                          src="assets/images/unknown.png"
+                          width="120px"
+                          [preview]="false"
+                        ></p-image>
+                      </div>
+                      <p-button styleClass="p-button-link p-1 m-1" routerLink="/clubs/club" [queryParams]="{ clubId: match.homeTeam.id }">{{match.homeTeam.name}}</p-button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="p-3 h-full">
+                <div class="shadow-2 p-3 h-full flex flex-column surface-card" style="border-radius: 6px">
+                    <h4 class="text-400 font-medium flex justify-content-center text-sm m-0">{{startDate | date: "yyyy.MM.dd. HH:mm"}}</h4>
+                    <div [ngClass]="{'red-text': matchStatus === 'First half' || matchStatus === 'Half time' || matchStatus === 'Second half'}">
+                        <h1 *ngIf="matchStatus !== 'Not started'" class="flex justify-content-center">{{match.homeScore.display}} - {{match.awayScore.display}}</h1>
+                        <div class="flex justify-content-center flex-row ">
+                            <div>{{matchStatus}}</div>    
+                            <ng-container *ngIf="matchStatus !== 'Half time' && matchStatus !== 'Full time' && matchStatus !== 'Not started'">
+                                <div>&nbsp;-&nbsp;</div>
+                                <div>{{matchTime}}</div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="p-3 h-full">
+                <div class="shadow-2 p-3 flex flex-column align-items-center surface-card" style="border-radius: 6px">
+                    <div *ngIf="awayClubImage !== null">
+                        <p-image
+                          [src]="awayClubImage"
+                          width="120px"
+                          [preview]="true"
+                        ></p-image>
+                      </div>
+                      <div *ngIf="awayClubImage === undefined">
+                        <p-image
+                          src="assets/images/unknown.png"
+                          width="120px"
+                          [preview]="false"
+                        ></p-image>
+                      </div>
+                      <p-button styleClass="p-button-link p-1 m-1" routerLink="/clubs/club" [queryParams]="{ clubId: match.awayTeam.id }">{{match.awayTeam.name}}</p-button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <p-tabView class="w-full">
+            <p-tabPanel header="Summary">
+                    <ul class="list-none p-0 m-0">
+                        <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap" *ngFor="let incident of incidents">
+                            <ng-container *ngIf="incident.hasOwnProperty('isHome')">
+                                <ng-container *ngIf="incident.isHome">
+                                    <div class="flex justify-content-start w-full flex-order-1">
+                                        <ng-container *ngIf="incident.incidentType === 'goal'">
+                                            <div class="text-500 mx-1">{{ incident.time }}</div>
+                                            <div class="font-bold mx-1"><i class="pi pi-circle-fill"></i></div>
+                                            <div class="font-bold mx-1">{{incident.homeScore}} - {{incident.awayScore}}</div>
+                                            <a *ngIf="incident.hasOwnProperty('player')" class="text-white font-bold mx-2" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: incident.player.id, clubId: match.homeTeam.id }">{{incident.player.name}}</a>
+                                        </ng-container>
+                                        <ng-container *ngIf="incident.incidentType === 'card'">
+                                            <div class="text-500 mx-1">{{ incident.time }}</div>
+                                            <div class="font-bold mx-1">
+                                                <i *ngIf="incident.incidentClass === 'yellow'" class="pi pi-tablet" style="color: yellow"></i>
+                                                <i *ngIf="incident.incidentClass === 'red'" class="pi pi-tablet" style="color: red"></i>
+                                            </div>
+                                            <a *ngIf="incident.hasOwnProperty('player')" class="text-white font-bold mx-2" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: incident.player.id, clubId: match.homeTeam.id }">{{incident.player.name}}</a>
+                                        </ng-container>
+                                        <ng-container *ngIf="incident.incidentType === 'substitution'">
+                                            <div class="text-500 mx-1">{{ incident.time }}</div>
+                                            <div class="font-bold mx-1"><i class="pi pi-arrow-right-arrow-left"></i></div>
+                                            <a class="text-white font-bold mx-2" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: incident.playerIn.id, clubId: match.homeTeam.id }">{{incident.playerIn.name}}</a>
+                                            <a class="text-white mx-2" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: incident.playerOut.id, clubId: match.homeTeam.id }">{{incident.playerOut.name}}</a>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="!incident.isHome">
+                                    <div class="flex justify-content-end w-full flex-order-1">
+                                        <ng-container *ngIf="incident.incidentType === 'goal'">
+                                            <a *ngIf="incident.hasOwnProperty('player')" class="text-white font-bold mx-2" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: incident.player.id, clubId: match.awayTeam.id }">{{incident.player.name}}</a>
+                                            <div class="font-bold mx-1">{{incident.homeScore}} - {{incident.awayScore}}</div>
+                                            <div class="font-bold mx-1"><i class="pi pi-circle-fill"></i></div>
+                                            <div class="text-500 mx-1">{{ incident.time }}</div>
+                                        </ng-container>
+                                        <ng-container *ngIf="incident.incidentType === 'card'">
+                                            <a *ngIf="incident.hasOwnProperty('player')" class="text-white font-bold mx-2" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: incident.player.id, clubId: match.awayTeam.id }">{{incident.player.name}}</a>
+                                            <div class="font-bold mx-1">
+                                                <i *ngIf="incident.incidentClass === 'yellow'" class="pi pi-tablet" style="color: yellow"></i>
+                                                <i *ngIf="incident.incidentClass === 'red'" class="pi pi-tablet" style="color: red"></i>
+                                            </div>
+                                            <div class="text-500 mx-1">{{ incident.time }}</div>
+                                        </ng-container>
+                                        <ng-container *ngIf="incident.incidentType === 'substitution'">
+                                            <a class="text-white mx-2" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: incident.playerOut.id, clubId: match.homeTeam.id }">{{incident.playerOut.name}}</a>
+                                            <a class="text-white font-bold mx-2" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: incident.playerIn.id, clubId: match.homeTeam.id }">{{incident.playerIn.name}}</a>
+                                            <div class="font-bold mx-1"><i class="pi pi-arrow-right-arrow-left"></i></div>
+                                            <div class="text-500 mx-1">{{ incident.time }}</div>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="incident.incidentType === 'injuryTime'">
+                                <div class="flex justify-content-start text-600 w-full  flex-order-1">Extra time: {{incident.length}}</div>
+                            </ng-container>
+                            <ng-container *ngIf="!incident.hasOwnProperty('isHome') && incident.incidentType !== 'injuryTime'">
+                                <div class="flex justify-content-center text-600 w-full font-bold flex-order-1">{{ incident.text }} {{incident.homeScore}} - {{incident.awayScore}}</div>
+                            </ng-container>
+                        </li>
+                       <li *ngIf="match.hasOwnProperty('match')" class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                            <div class="flex justify-content-start text-600 w-full  flex-order-1">Referee: {{match.match.name}}</div>
+                        </li>
+                    </ul>
+            </p-tabPanel>
+            <p-tabPanel header="Stats">
+                <div *ngFor="let group of statistics">
+                    <ul class="list-none p-0 m-0">
+                      <li class="flex justify-content-between flex-wrap py-3 px-2 border-top-1 surface-border"  *ngFor="let item of group.statisticsItems">
+                            <div class="flex align-items-center justify-content-center">{{item.home}}</div>
+                            <div class="flex align-items-center justify-content-center font-bold">{{item.name}}</div>
+                            <div class="flex align-items-center justify-content-center">{{item.away}}</div>
+                      </li>
+                    </ul>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Lineups">
+                <p class="flex align-items-center justify-content-center text-lg font-bold">Starting lineups</p> 
+                <div *ngIf="homeLineup && awayLineup && homeLineup.players && awayLineup.players" class="flex flex-wrap justify-content-between">
+                    <div class="w-6"> 
+                        <ul class="list-none p-0 m-0">
+                            <li  *ngFor="let player of homeLineup.players; let i=index">
+                                <a class="flex align-items-center justify-content-center text-white" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: player.player.id, clubId: match.awayTeam.id }">{{player.player.name}}</a>
+                                <p-divider *ngIf="(i+1) === 11"></p-divider>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-6">
+                        <ul class="list-none p-0 m-0">
+                            <li *ngFor="let player of awayLineup.players; let i=index">
+                                <a class="flex align-items-center justify-content-center text-white" style="text-decoration: none;" routerLink="/players/player" [queryParams]="{ playerId: player.player.id, clubId: match.homeTeam.id }">{{player.player.name}}</a>
+                                <p-divider *ngIf="(i+1) === 11"></p-divider>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</p-card>

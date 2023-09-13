@@ -1,0 +1,171 @@
+<div *ngIf="isLoading">
+  <loader [type]="'basic'"></loader>
+</div>
+<div class="flex justify-content-center" *ngIf="!isLoading">
+  <p-card
+    class="p-4 shadow-2 border-round w-full lg:w-6"
+    header="Add"
+    subheader="Manager"
+  >
+    <div>
+      <form [formGroup]="addForm" (ngSubmit)="addManager(addForm.value)">
+        <div class="field">
+          <span class="p-float-label">
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              pInputText
+              class="w-full"
+              [ngClass]="{ 'ng-invalid ng-dirty': validateControl('name') }"
+            />
+            <label for="name" class="p-float-label">Name</label>
+          </span>
+          <small
+            *ngIf="validateControl('name') && hasError('name', 'required')"
+            class="p-error flex justify-content-center"
+          >
+            Name is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input
+              id="code"
+              type="text"
+              maxlength="5"
+              formControlName="code"
+              pInputText
+              class="w-full"
+              [ngClass]="{ 'ng-invalid ng-dirty': validateControl('code') }"
+            />
+            <label for="code" class="p-float-label">Code</label>
+          </span>
+          <small
+            *ngIf="validateControl('code') && hasError('code', 'required')"
+            class="p-error flex justify-content-center"
+          >
+            Code is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input
+              id="country"
+              type="text"
+              formControlName="country"
+              pInputText
+              class="w-full"
+              [ngClass]="{ 'ng-invalid ng-dirty': validateControl('country') }"
+            />
+            <label for="country" class="p-float-label">Country</label>
+          </span>
+          <small
+            *ngIf="
+              validateControl('country') && hasError('country', 'required')
+            "
+            class="p-error flex justify-content-center"
+          >
+            Country is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <p-calendar
+              id="birthdate"
+              formControlName="birthdate"
+              inputPlaceholder="DD/MM/YYYY"
+              [showIcon]="true"
+              [style]="{ width: '100%' }"
+              [ngClass]="{
+                'ng-invalid ng-dirty': validateControl('birthdate')
+              }"
+            ></p-calendar>
+            <label for="birthdate" class="p-float-label">Birthdate</label>
+          </span>
+          <small
+            *ngIf="
+              validateControl('birthdate') && hasError('birthdate', 'required')
+            "
+            class="p-error flex justify-content-center"
+          >
+            Birthdate is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input
+              id="formation"
+              type="text"
+              formControlName="formation"
+              placeholder="4-3-3"
+              pInputText
+              class="w-full"
+              [ngClass]="{
+                'ng-invalid ng-dirty': validateControl('formation')
+              }"
+            />
+            <label for="formation" class="p-float-label">Formation</label>
+          </span>
+          <small
+            *ngIf="
+              validateControl('formation') && hasError('formation', 'required')
+            "
+            class="p-error flex justify-content-center"
+          >
+            Formation is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input
+              id="year"
+              type="number"
+              min="1600"
+              max="2023"
+              formControlName="year"
+              pInputText
+              class="w-full"
+              [ngClass]="{ 'ng-invalid ng-dirty': validateControl('year') }"
+            />
+            <label for="year" class="p-float-label">Starting year</label>
+          </span>
+          <small
+            *ngIf="validateControl('year') && hasError('year', 'required')"
+            class="p-error flex justify-content-center"
+          >
+            Starting year is required.
+          </small>
+          <small
+            *ngIf="hasError('year', 'min')"
+            class="p-error flex justify-content-center"
+            >This year is too small.</small
+          >
+          <small
+            *ngIf="hasError('year', 'max')"
+            class="p-error flex justify-content-center"
+            >This year is too high.</small
+          >
+        </div>
+        <div class="field my-4">
+          <p-toggleButton
+            formControlName="championship"
+            onIcon="pi pi-check"
+            offIcon="pi pi-times"
+          ></p-toggleButton>
+        </div>
+        <div class="field flex justify-content-center">
+          <button
+            pButton
+            pRipple
+            label="Add"
+            icon="pi pi-plus"
+            class="w-full"
+            type="submit"
+            [disabled]="!addForm.valid"
+          ></button>
+        </div>
+      </form>
+    </div>
+  </p-card>
+</div>

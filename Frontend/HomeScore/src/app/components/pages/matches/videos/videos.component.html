@@ -1,0 +1,25 @@
+<div *ngIf="isLoading">
+    <loader [type]="'list'"></loader>
+</div>
+  <div *ngIf="!isLoading">
+      <p-dataView #dv [value]="videos" layout="grid">
+        <ng-template let-video pTemplate="gridItem">
+            <div class="col-12 lg:col-4 p-2">
+                <div class="p-4 border-1 surface-border surface-card border-round">
+                    <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                        <span class="flex align-items-center gap-2">
+                            <i class="pi pi-tag"></i>
+                            <span class="font-semibold">{{ video.subtitle }}</span>
+                        </span>
+                        <span class="text-400 font-medium text-sm">{{ video.createdAtTimestamp | startDate | date : "yyyy.MM.dd. HH:mm"}}</span>
+                     </div>
+                    <div class="flex flex-column align-items-center gap-3 py-5">
+                        <iframe [src]="video.url" frameborder="0" allowfullscreen></iframe>
+                        <div class="text-2xl font-bold">{{ video.title }}</div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+      </p-dataView>
+</div>
+  

@@ -1,0 +1,54 @@
+<div *ngIf="isLoading">
+  <loader [type]="'basic'"></loader>
+</div>
+<div class="flex justify-content-center" *ngIf="!isLoading">
+  <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+    <div class="text-center mb-5">
+      <img src="assets/images/logo.png" alt="Image" height="100" class="mb-3">
+      <div class="text-900 text-3xl font-medium mb-3">Welcome back!</div>
+      <span class="text-600 font-medium line-height-3">Don't have an account?</span>
+      <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer" routerLink="/registration">Create today!</a>
+    </div>
+    <div class="card" *ngIf="showError">
+      <p-messages [(value)]="errorMessage" [enableService]="false" [closable]="true"></p-messages>
+  </div>
+    <div>
+      <form [formGroup]="loginForm" (ngSubmit)="loginUser(loginForm.value)">
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input id="email" type="email" formControlName="email" placeholder="user@example.com" pInputText class="w-full"
+              [ngClass]="{'ng-invalid ng-dirty': validateControl('email')}"/>
+            <label for="email" class="p-float-label">Email</label>
+          </span>
+          <small *ngIf="validateControl('email') && hasError('email', 'email')" class="p-error flex justify-content-center">
+            Please provide a valid email.
+          </small>
+          <small *ngIf="validateControl('email') && hasError('email', 'required')" class="p-error flex justify-content-center">
+            Email is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <p-password formControlName="password" [toggleMask]="true" [feedback]="false" [style]="{ width: '100%' }" [inputStyle]="{ width: '100%' }"
+              [ngClass]="{'ng-invalid ng-dirty': validateControl('password')}">
+            </p-password>
+            <label for="password">Password</label>
+          </span>
+          <small *ngIf="validateControl('password') && hasError('password', 'required')" class="p-error flex justify-content-center">
+            Password is required.
+          </small>
+        </div>
+        <div class="field flex justify-content-center">
+        </div>
+        <div class="flex align-items-center justify-content-between mb-6">
+          <div class="flex align-items-center">
+            <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>
+            <label for="rememberme1" class="text-900">Remember me</label>
+          </div>
+          <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer" routerLink="/forgotpassword">Forgot password?</a>
+        </div>
+        <button pButton pRipple label="Sign In" icon="pi pi-user" class="w-full" type="submit" [disabled]="!loginForm.valid"></button>
+      </form>
+    </div>
+  </div>
+</div>

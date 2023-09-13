@@ -1,0 +1,494 @@
+<div *ngIf="isLoading">
+  <loader [type]="'basic'"></loader>
+</div>
+<div *ngIf="!isLoading">
+  <div *ngIf="club !== undefined">
+    <p-card>
+      <ng-template pTemplate="header">
+        <div
+          class="flex flex-row flex-wrap card-container {{
+            club.clubColour | colour
+          }}"
+        >
+          <p-image
+            *ngIf="clubImage !== null"
+            [src]="clubImage"
+            [alt]="club.clubName"
+            class="bg-left pt-1 px-1"
+            [preview]="true"
+            height="170"
+            width="170"
+          ></p-image>
+          <p-image
+            *ngIf="clubImage === null"
+            class="bg-left pt-1 px-1"
+            src="assets/images/unknown.png"
+            [preview]="true"
+            height="170"
+            width="170"
+          ></p-image>
+          <div style="padding: 1rem">
+            <div class="p-card-title text-5xl">{{ club.clubName }}</div>
+            <p-rating
+              [(ngModel)]="club.clubRating"
+              [stars]="5"
+              [readonly]="true"
+              [cancel]="false"
+            ></p-rating>
+            <div class="p-card-subtitle mt-1">Hungary</div>
+            <div class="flex">
+              <div class="mr-3 mt-2 font-bold">City: {{ club.clubCity }}</div>
+              <div class="mr-3 mt-2 font-bold">
+                Colour: {{ club.clubColour }}
+              </div>
+              <div class="mr-3 mt-2 font-bold">
+                Founded: {{ club.clubFounded }}
+              </div>
+              <div class="mr-3 mt-2 font-bold">
+                Value: {{ clubValue | currency : "EUR" : "symbol" }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <p-toolbar *ngIf="authenticationResponse.isUserAdmin">
+        <div class="p-toolbar-group-start">
+          <p-button
+            *ngIf="club.manager === null"
+            label="Add manager"
+            icon="pi pi-plus-circle"
+            class="mr-2"
+            routerLink="/managers/add"
+            [queryParams]="{ clubId: club.clubId }"
+          ></p-button>
+          <p-button
+            label="Add player"
+            icon="pi pi-plus-circle"
+            class="mr-2"
+            routerLink="/players/add"
+            [queryParams]="{ clubId: club.clubId }"
+          ></p-button>
+          <p-button
+            *ngIf="club.stadium === null"
+            label="Add stadium"
+            icon="pi pi-plus-circle"
+            class="mr-2"
+            routerLink="/stadiums/add"
+            [queryParams]="{ clubId: club.clubId }"
+          ></p-button>
+          <p-fileUpload
+            *ngIf="clubImage === null"
+            mode="basic"
+            chooseLabel="Upload"
+            url="https://www.primefaces.org/cdn/api/upload.php"
+            accept="image/*"
+            (onUpload)="uploadClubImage($event)"
+          ></p-fileUpload>
+          <p-button
+            *ngIf="clubImage !== null"
+            label="Delete image"
+            icon="pi pi-trash"
+            class="mr-2"
+            styleClass="p-button-danger"
+            (onClick)="deleteClubImage(club.clubId)"
+          ></p-button>
+        </div>
+        <div class="p-toolbar-group-end">
+          <p-button
+            styleClass="p-button-warning p-button-text"
+            icon="pi pi-pencil"
+            routerLink="/clubs/update"
+            [queryParams]="{ clubId: club.clubId }"
+          ></p-button>
+          <p-button
+            styleClass="p-button-danger p-button-text"
+            icon="pi pi-trash"
+            (onClick)="deleteClub(club.clubId)"
+          ></p-button>
+        </div>
+      </p-toolbar>
+      <div class="grid">
+        <div class="col-12 md:col-7">
+          <div class="surface-card shadow-2 p-3 border-round">
+            <div class="flex justify-content-between mb-3">
+              <div style="width: 80%">
+                <span class="block text-500 font-semibold text-lg mb-3"
+                  >Players</span
+                >
+                <div
+                  class="text-900 font-medium text-xl font-bold text-primary p-1"
+                >
+                  Squad
+                </div>
+                <p-table [value]="club.players">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th></th>
+                      <th>Name</th>
+                      <th>Value</th>
+                      <th></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-player>
+                    <tr>
+                      <td>
+                        <p-tag>
+                          {{ player.shirtNumber }}
+                        </p-tag>
+                      </td>
+                      <td>
+                        <table>
+                          <tr>
+                            <img
+                              [src]="urlCreator(player.countryCode)"
+                              class="vertical-align-middle"
+                              height="15"
+                              width="25"
+                            />
+                            <p-button
+                              class="vertical-align-middle mx-1"
+                              styleClass="p-button-raised p-button-text p-button-sm font-bold p-1"
+                              routerLink="/players/player"
+                              [queryParams]="{
+                                playerId: player.playerId,
+                                clubId: player.clubId
+                              }"
+                            >
+                              {{ player.playerName }}
+                            </p-button>
+                            <p-tag
+                              class="vertical-align-middle"
+                              *ngIf="player.captain"
+                            >
+                              C
+                            </p-tag>
+                          </tr>
+                          <tr>
+                            <td>
+                              {{ player.playerPosition | playerPosition }}
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td>
+                        {{ player.playerValue | currency : "EUR" : "symbol" }}
+                      </td>
+                      <td>
+                        <ng-container *ngIf="authenticationResponse.isUserAdmin">
+                          <p-button
+                            styleClass="p-button-warning p-button-text"
+                            icon="pi pi-pencil"
+                            routerLink="/players/update"
+                            [queryParams]="{ playerId: player.playerId }"
+                          ></p-button>
+                          <p-button
+                            styleClass="p-button-danger p-button-text"
+                            icon="pi pi-trash"
+                            (onClick)="deletePlayer(player.playerId)"
+                          ></p-button>
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div
+                class="flex align-items-center justify-content-center bg-primary border-round"
+                style="width: 3rem; height: 3rem"
+              >
+                <i class="pi pi-users text-green-600 text-3xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-5">
+          <div
+            class="surface-card shadow-2 p-3 border-round"
+            *ngIf="club.manager != null"
+          >
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="block text-500 font-semibold text-lg mb-3"
+                  >Near events</span
+                >
+                <div
+                  class="text-900 font-medium text-xl font-bold text-primary p-1"
+                >
+                  Matches
+                </div>
+              </div>
+              <div
+                class="flex align-items-center justify-content-center bg-primary border-round"
+                style="width: 3rem; height: 3rem"
+              >
+                <i class="pi pi-calendar text-green-600 text-3xl"></i>
+              </div>
+            </div>
+            <p-carousel
+              [value]="nearEvents"
+              [numVisible]="1"
+              [numScroll]="1"
+              [circular]="false"
+            >
+              <ng-template let-event pTemplate="item">
+                <p-tag [value]="getStatus(event.status.type)"></p-tag>
+                <div
+                  class="border-1 surface-border border-round m-2 text-center py-5 px-3"
+                >
+                  <div>
+                    <h6 class="text-400 font-medium text-sm mt-0 mb-1">
+                      {{
+                        event.startTimestamp
+                          | startDate
+                          | date : "yyyy.MM.dd. HH:mm"
+                      }}
+                    </h6>
+                    <p-button
+                      styleClass="p-button-raised p-button-text p-button-sm font-bold p-1"
+                      routerLink="/matches/match"
+                      [queryParams]="{ matchId: event.id }"
+                    >
+                      {{ event.homeTeam.name }} - {{ event.awayTeam.name }}
+                    </p-button>
+                    <h6 class="font-bold text-lg mt-0 mb-1">
+                      {{ event.homeScore.display }} -
+                      {{ event.awayScore.display }}
+                    </h6>
+                    <h6
+                      class="text-400 font-medium text-sm mt-0 mb-1"
+                      *ngIf="event.status.type === 'finished'"
+                    >
+                      End
+                    </h6>
+                  </div>
+                </div>
+              </ng-template>
+            </p-carousel>
+          </div>
+          <div
+            class="surface-card shadow-2 p-3 border-round"
+            *ngIf="club.manager != null"
+          >
+            <p-toolbar *ngIf="authenticationResponse.isUserAdmin" class="m-1">
+              <div class="p-toolbar-group-start">
+                <p-fileUpload
+                  *ngIf="managerImage === null"
+                  mode="basic"
+                  chooseLabel="Upload"
+                  url="https://www.primefaces.org/cdn/api/upload.php"
+                  accept="image/*"
+                  (onUpload)="uploadManagerImage($event)"
+                ></p-fileUpload>
+                <p-button
+                  *ngIf="managerImage !== null"
+                  label="Delete image"
+                  icon="pi pi-trash"
+                  class="mr-2"
+                  styleClass="p-button-danger"
+                  (onClick)="deleteManagerImage(club.manager.managerId)"
+                ></p-button>
+              </div>
+              <div class="p-toolbar-group-end">
+                <p-button
+                  styleClass="p-button-warning p-button-text"
+                  icon="pi pi-pencil"
+                  routerLink="/managers/update"
+                  [queryParams]="{ managerId: club.manager.managerId }"
+                ></p-button>
+                <p-button
+                  styleClass="p-button-danger p-button-text"
+                  icon="pi pi-trash"
+                  (onClick)="deleteManager(club.manager.managerId)"
+                ></p-button>
+              </div>
+            </p-toolbar>
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="block text-500 font-semibold text-lg mb-3"
+                  >Manager</span
+                >
+                <div class="flex flex-row flex-wrap">
+                  <div *ngIf="managerImage !== null">
+                    <p-image
+                      [src]="managerImage"
+                      width="120px"
+                      [preview]="true"
+                    ></p-image>
+                  </div>
+                  
+                  <div *ngIf="managerImage === null">
+                    <p-image
+                      src="assets/images/unknown.png"
+                      width="120px"
+                      [preview]="true"
+                    ></p-image>
+                  </div>
+                  <div>
+                    <p-button
+                      styleClass="p-button-raised p-button-text p-button-lg font-bold p-1"
+                      routerLink="/managers/manager"
+                      [queryParams]="{
+                        managerId: club.manager.managerId,
+                        clubId: club.clubId
+                      }"
+                    >
+                      {{ club.manager.managerName }}
+                    </p-button>
+                    <div>
+                      <img
+                        [src]="urlCreator(club.manager.countryCode)"
+                        class="mt-1 ml-2"
+                        style="width: 20px"
+                      />
+                    </div>
+                    <div class="text-400 font-medium text-sm ml-2">
+                      Age: {{ club.manager.managerBirthdate | age }}
+                    </div>
+                    <div class="text-400 font-medium text-sm ml-2">
+                      Appointed: {{ club.manager.managerStartYear }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex align-items-center justify-content-center bg-primary border-round"
+                style="width: 3rem; height: 3rem"
+              >
+                <i class="pi pi-user text-green-600 text-3xl"></i>
+              </div>
+            </div>
+          </div>
+          <div
+            class="surface-card shadow-2 p-3 border-round"
+            *ngIf="club.stadium != null"
+          >
+            <p-toolbar *ngIf="authenticationResponse.isUserAdmin" class="m-1">
+              <div class="p-toolbar-group-start">
+                <p-fileUpload
+                  *ngIf="stadiumImage === null"
+                  mode="basic"
+                  chooseLabel="Upload"
+                  url="https://www.primefaces.org/cdn/api/upload.php"
+                  accept="image/*"
+                  (onUpload)="uploadStadiumImage($event)"
+                ></p-fileUpload>
+                <p-button
+                  *ngIf="stadiumImage !== null"
+                  label="Delete image"
+                  icon="pi pi-trash"
+                  class="mr-2"
+                  styleClass="p-button-danger"
+                  (onClick)="deleteStadiumImage(club.stadium.stadiumId)"
+                ></p-button>
+              </div>
+              <div class="p-toolbar-group-end">
+                <p-button
+                  styleClass="p-button-warning p-button-text"
+                  icon="pi pi-pencil"
+                  routerLink="/stadiums/update"
+                  [queryParams]="{ stadiumId: club.stadium.stadiumId }"
+                ></p-button>
+                <p-button
+                  styleClass="p-button-danger p-button-text"
+                  icon="pi pi-trash"
+                  (onClick)="deleteStadium(club.stadium.stadiumId)"
+                ></p-button>
+              </div>
+            </p-toolbar>
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="block text-500 font-semibold text-lg mb-3"
+                  >Stadium</span
+                >
+                <div class="flex flex-row flex-wrap">
+                  <div *ngIf="stadiumImage !== null">
+                    <p-image
+                      [src]="stadiumImage"
+                      width="120px"
+                      [preview]="true"
+                    ></p-image>
+                  </div>
+                  <div *ngIf="stadiumImage === null">
+                    <p-image
+                      src="assets/images/unknown.png"
+                      width="120px"
+                      [preview]="true"
+                    ></p-image>
+                  </div>
+                  <div>
+                    <p-button
+                      styleClass="p-button-raised p-button-text p-button-lg font-bold p-1"
+                      routerLink="/stadiums/stadium"
+                      [queryParams]="{
+                        stadiumId: club.stadium.stadiumId,
+                        clubId: club.clubId
+                      }"
+                    >
+                      {{ club.stadium.stadiumName }}
+                    </p-button>
+                    <div class="text-400 font-medium text-sm ml-2">
+                      Completed: {{ club.stadium.completed }}
+                    </div>
+                    <div class="text-400 font-medium text-sm ml-2">
+                      Capacity: {{ club.stadium.capacity }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex align-items-center justify-content-center bg-primary border-round"
+                style="width: 3rem; height: 3rem"
+              >
+                <i class="pi pi-map-marker text-green-600 text-3xl"></i>
+              </div>
+            </div>
+            <div class="card flex justify-content-center">
+              <iframe
+                [src]="stadiumMap"
+                class="mt-2 ml-2"
+                height="200px"
+                width="100%"
+                style="border: none"
+              >
+              </iframe>
+            </div>
+          </div>
+          <div class="surface-card shadow-2 p-3 border-round">
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="block text-500 font-semibold text-lg mb-3"
+                  >Players</span
+                >
+                <div
+                  class="text-900 font-medium text-xl font-bold text-primary p-1"
+                >
+                  Nationalities
+                </div>
+                <div class="text-400 font-medium text-sm ml-2">
+                  Hungarian players: {{ hungarians }}
+                </div>
+                <div class="text-400 font-medium text-sm ml-2">
+                  Foreign players: {{ foreigners }}
+                </div>
+              </div>
+              <div
+                class="flex align-items-center justify-content-center bg-primary border-round"
+                style="width: 3rem; height: 3rem"
+              >
+                <i class="pi pi-flag text-green-600 text-3xl"></i>
+              </div>
+            </div>
+            <div class="card flex justify-content-center">
+              <p-chart
+                type="pie"
+                [data]="data"
+                [options]="options"
+                width="225px"
+              ></p-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

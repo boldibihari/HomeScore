@@ -1,0 +1,97 @@
+<p-dialog
+  #dialog
+  header="Search"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closeDialog()"
+>
+  <div class="flex flex-column">
+    <div class="field flex justify-content-center p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input class="w-full" type="text" pInputText [(ngModel)]="text" />
+    </div>
+    <div class="field flex justify-content-center">
+      <button
+        pButton
+        pRipple
+        [loading]="loading"
+        label="Search"
+        class="w-full"
+        type="submit"
+        (click)="search()"
+      ></button>
+    </div>
+  </div>
+  <div class="field flex justify-content-center">
+    <ng-container *ngIf="result !== undefined">
+      <div class="flex flex-column" *ngIf="result !== null">
+        <div *ngIf="result[0].length !== 0">
+          <ng-container *ngFor="let club of result[0]">
+            <p-button
+              styleClass="p-button-raised p-button-text p-button-success p-button-lg p-1"
+              routerLink="/clubs/club"
+              [queryParams]="{ clubId: club.clubId }"
+              (onClick)="closeDialog()"
+              >{{ club.clubName }}</p-button
+            >
+          </ng-container>
+        </div>
+        <div class="flex flex-column" *ngIf="result[1].length !== 0">
+          <ng-container *ngFor="let player of result[1]">
+            <p-button
+              styleClass="p-button-raised p-button-text p-button-success p-button-lg p-1"
+              routerLink="/players/player"
+              [queryParams]="{
+                playerId: player.playerId,
+                clubId: player.clubId
+              }"
+              (onClick)="closeDialog()"
+              >{{ player.playerName }}</p-button
+            >
+          </ng-container>
+        </div>
+        <div class="flex flex-column" *ngIf="result[2].length !== 0">
+          <ng-container *ngFor="let manager of result[2]">
+            <p-button
+              styleClass="p-button-raised p-button-text p-button-success p-button-lg p-1"
+              routerLink="/managers/manager"
+              [queryParams]="{
+                managerId: manager.managerId,
+                clubId: manager.clubId
+              }"
+              (onClick)="closeDialog()"
+              >{{ manager.managerName }}</p-button
+            >
+          </ng-container>
+        </div>
+        <div class="flex flex-column" *ngIf="result[3].length !== 0">
+          <ng-container *ngFor="let stadium of result[3]">
+            <p-button
+              styleClass="p-button-raised p-button-text p-button-success p-button-lg p-1"
+              routerLink="/stadiums/stadium"
+              [queryParams]="{
+                stadiumId: stadium.stadiumId,
+                clubId: stadium.clubId
+              }"
+              (onClick)="closeDialog()"
+              >{{ stadium.stadiumName }}</p-button
+            >
+          </ng-container>
+        </div>
+      </div>
+      <div
+        *ngIf="
+          result[0].length === 0 &&
+          result[1].length === 0 &&
+          result[2].length === 0 &&
+          result[3].length === 0
+        "
+      >
+        <span>No result!</span>
+      </div>
+    </ng-container>
+  </div>
+</p-dialog>

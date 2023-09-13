@@ -1,0 +1,202 @@
+<div *ngIf="isLoading">
+  <loader [type]="'basic'"></loader>
+</div>
+<div *ngIf="!isLoading">
+  <div *ngIf="player !== undefined && club !== undefined">
+    <p-card>
+      <ng-template pTemplate="header">
+        <div
+          class="flex flex-row flex-wrap card-container {{
+            club.clubColour | colour
+          }}"
+        >
+          <p-image
+            [src]="playerImage"
+            [alt]="player.playerName"
+            class="bg-left pt-1 px-1"
+            height="170"
+            width="170"
+            [preview]="true"
+          ></p-image>
+          <div style="padding: 1rem">
+            <div class="p-card-title text-5xl">{{ player.playerName }}</div>
+            <div class="p-card-subtitle">{{ player.playerCountry }}</div>
+            <div class="flex">
+              <div class="mr-3 mt-2 font-bold">Club: {{ club.clubName }}</div>
+              <div class="mr-3 mt-2 font-bold">
+                Position: {{ player.playerPosition | playerPosition }}
+              </div>
+              <div class="mr-3 mt-2 font-bold">
+                Value: {{ player.playerValue }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <div class="grid">
+        <div class="col-12 md:col-7">
+          <div class="surface-card shadow-2 p-3 border-round">
+            <div class="flex justify-content-between mb-3">
+              <div style="width: 90%">
+                <span class="block text-500 font-semibold text-lg mb-3"
+                  >Player</span
+                >
+                <div
+                  class="text-900 font-medium text-xl font-bold text-primary p-1"
+                >
+                  Profile
+                </div>
+                <div class="surface-section">
+                  <ul class="list-none p-0 m-0">
+                    <li
+                      class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                    >
+                      <div class="text-500 w-6 md:w-4 font-medium">
+                        Birthdate
+                      </div>
+                      <div
+                        class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+                      >
+                        {{ player.playerBirthdate | date : "yyyy.MM.dd." }} ({{
+                          player.playerBirthdate | age
+                        }})
+                      </div>
+                    </li>
+                    <li
+                      class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                    >
+                      <div class="text-500 w-6 md:w-4 font-medium">
+                        Shirt number
+                      </div>
+                      <div
+                        class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+                      >
+                        {{ player.shirtNumber }}
+                      </div>
+                    </li>
+                    <li
+                      class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                    >
+                      <div class="text-500 w-6 md:w-4 font-medium">Height</div>
+                      <div
+                        class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+                      >
+                        {{ player.height }} cm
+                      </div>
+                    </li>
+                    <li
+                      class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                    >
+                      <div class="text-500 w-6 md:w-4 font-medium">
+                        Preferred foot
+                      </div>
+                      <div
+                        class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+                      >
+                        {{ player.preferredFoot | prefferedFoot }}
+                      </div>
+                    </li>
+                    <li
+                      class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                    >
+                      <div class="text-500 w-6 md:w-4 font-medium">
+                        Market value
+                      </div>
+                      <div
+                        class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+                      >
+                        {{ player.playerValue | currency : "EUR" : "symbol" }}
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div
+                class="flex align-items-center justify-content-center bg-primary border-round"
+                style="width: 3rem; height: 3rem"
+              >
+                <i class="pi pi-info-circle text-green-600 text-3xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 md:col-5">
+          <div
+            class="surface-card shadow-2 p-3 border-round"
+            *ngIf="club.manager != null"
+          >
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="block text-500 font-semibold text-lg mb-3"
+                  >Club</span
+                >
+                <div class="flex flex-row flex-wrap">
+                  <div>
+                    <p-image
+                      [src]="clubImage"
+                      width="120px"
+                      [preview]="true"
+                    ></p-image>
+                  </div>
+                  <div>
+                    <p-button
+                      styleClass="p-button-raised p-button-text p-button-lg font-bold p-1"
+                      routerLink="/clubs/club"
+                      [queryParams]="{ clubId: club.clubId }"
+                    >
+                      {{ club.clubName }}
+                    </p-button>
+                    <div class="text-400 font-medium text-sm ml-2">
+                      Founded: {{ club.clubFounded }}
+                    </div>
+                    <div class="text-400 font-medium text-sm ml-2">
+                      City: {{ club.clubCity }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex align-items-center justify-content-center bg-primary border-round"
+                style="width: 3rem; height: 3rem"
+              >
+                <i class="pi pi-home text-green-600 text-3xl"></i>
+              </div>
+            </div>
+          </div>
+          <div
+            class="surface-card shadow-2 p-3 border-round"
+            *ngIf="club.manager != null"
+          >
+            <div class="flex justify-content-between mb-3">
+              <div>
+                <span class="block text-500 font-semibold text-lg mb-3"
+                  >Nationality</span
+                >
+                <div class="flex flex-row flex-wrap">
+                  <div class="flex justify-content-center">
+                    <img
+                      [src]="getFlag(player.countryCode)"
+                      height="30"
+                      width="45"
+                    />
+                  </div>
+                  <div
+                    class="text-900 font-medium text-xl font-bold text-primary p-1"
+                  >
+                    {{ player.playerCountry }}
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex align-items-center justify-content-center bg-primary border-round"
+                style="width: 3rem; height: 3rem"
+              >
+                <i class="pi pi-map-marker text-green-600 text-3xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

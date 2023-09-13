@@ -1,0 +1,75 @@
+<p-fieldset legend="Automated highlighting of main scenes" [toggleable]="true" [collapsed]="true">
+  <form [formGroup]="automatedHighlightingForm" (ngSubmit)="addAutomatedHighlighting(automatedHighlightingForm.value)">
+        <p-steps [model]="steps" [readonly]="false" [activeIndex]="activeIndex" (activeIndexChange)="onActiveIndexChange($event)"></p-steps>
+      <div *ngIf="activeIndex === 0">
+        <p-card>
+          <p>The automated highlighting function allows you to highlight the main events of the matches.</p>
+        </p-card>
+      </div>
+      <div *ngIf="activeIndex === 1">
+        <p-card>
+          <p>We recomemnded <a href="https://us.livesports808.com/" target="_blank">Score808</a> live streaming service, just visit the website, select the match you want to follow and enter its url below.</p>
+          <div class="field my-4">
+            <span class="p-float-label">
+              <input
+                id="link"
+                type="text"
+                formControlName="link"
+                pInputText
+                class="w-full"
+                [ngClass]="{
+                  'ng-invalid ng-dirty': validateControl('link')
+                }"
+              />
+              <label for="link" class="p-float-label">Link</label>
+            </span>
+            <small
+              *ngIf="
+                validateControl('link') && hasError('link', 'required')
+              "
+              class="p-error flex justify-content-center"
+            >
+              Link is required.
+            </small>
+          </div>
+        </p-card>
+      </div>
+      <div *ngIf="activeIndex === 2">
+        <p-card>
+          <div class="field my-4">
+            <span class="p-float-label">
+              <p-dropdown
+                [options]="types"
+                formControlName="type"
+                optionLabel="name"
+                placeholder="Select an option"
+                [style]="{ width: '100%' }"
+                [ngClass]="{ 'ng-invalid ng-dirty': validateControl('type') }"
+              >
+              </p-dropdown>
+              <label for="type">Type</label>
+            </span>
+            <small
+              *ngIf="
+                validateControl('type') && hasError('type', 'required')
+              "
+              class="p-error flex justify-content-center"
+            >
+              Type is required.
+            </small>
+          </div>
+          <div class="field flex justify-content-center">
+            <button
+              pButton
+              pRipple
+              label="Submit"
+              icon="pi pi-check-circle"
+              class="w-full"
+              type="submit"
+              [disabled]="!automatedHighlightingForm.valid"
+            ></button>
+          </div>
+        </p-card>
+      </div>
+    </form>
+</p-fieldset>

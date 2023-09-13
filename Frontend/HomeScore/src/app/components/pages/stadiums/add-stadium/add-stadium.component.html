@@ -1,0 +1,134 @@
+<div *ngIf="isLoading">
+  <loader [type]="'basic'"></loader>
+</div>
+<div class="flex justify-content-center" *ngIf="!isLoading">
+  <p-card
+    class="p-4 shadow-2 border-round w-full lg:w-6"
+    header="Add"
+    subheader="Stadium"
+  >
+    <div>
+      <form [formGroup]="addForm" (ngSubmit)="addStadium(addForm.value)">
+        <div class="field">
+          <span class="p-float-label">
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              pInputText
+              class="w-full"
+              [ngClass]="{ 'ng-invalid ng-dirty': validateControl('name') }"
+            />
+            <label for="name" class="p-float-label">Name</label>
+          </span>
+          <small
+            *ngIf="validateControl('name') && hasError('name', 'required')"
+            class="p-error flex justify-content-center"
+          >
+            Name is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input
+              id="completed"
+              type="number"
+              min="1800"
+              max="2023"
+              formControlName="completed"
+              pInputText
+              class="w-full"
+              [ngClass]="{
+                'ng-invalid ng-dirty': validateControl('completed')
+              }"
+            />
+            <label for="completed" class="p-float-label">Completed</label>
+          </span>
+          <small
+            *ngIf="
+              validateControl('completed') && hasError('completed', 'required')
+            "
+            class="p-error flex justify-content-center"
+          >
+            Completed is required.
+          </small>
+          <small
+            *ngIf="hasError('completed', 'min')"
+            class="p-error flex justify-content-center"
+            >This year is too small.</small
+          >
+          <small
+            *ngIf="hasError('completed', 'max')"
+            class="p-error flex justify-content-center"
+            >This year is too high.</small
+          >
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input
+              id="capacity"
+              type="number"
+              min="1000"
+              max="100000"
+              formControlName="capacity"
+              pInputText
+              class="w-full"
+              [ngClass]="{ 'ng-invalid ng-dirty': validateControl('capacity') }"
+            />
+            <label for="capacity" class="p-float-label">Capacity</label>
+          </span>
+          <small
+            *ngIf="
+              validateControl('capacity') && hasError('capacity', 'required')
+            "
+            class="p-error flex justify-content-center"
+          >
+            Capacity is required.
+          </small>
+          <small
+            *ngIf="hasError('capacity', 'min')"
+            class="p-error flex justify-content-center"
+            >This number is too small.</small
+          >
+          <small
+            *ngIf="hasError('capacity', 'max')"
+            class="p-error flex justify-content-center"
+            >This number is too high.</small
+          >
+        </div>
+        <div class="field">
+          <span class="p-float-label">
+            <input
+              id="location"
+              type="text"
+              formControlName="location"
+              pInputText
+              class="w-full"
+              [ngClass]="{ 'ng-invalid ng-dirty': validateControl('location') }"
+            />
+            <label for="location" class="p-float-label">Location</label>
+          </span>
+          <small
+            *ngIf="
+              validateControl('location') && hasError('location', 'required')
+            "
+            class="p-error flex justify-content-center"
+          >
+            Location is required.
+          </small>
+        </div>
+        <div class="field flex justify-content-center">
+          <button
+            pButton
+            pRipple
+            label="Add"
+            icon="pi pi-plus"
+            class="w-full"
+            type="submit"
+            [disabled]="!addForm.valid"
+          ></button>
+        </div>
+      </form>
+    </div>
+  </p-card>
+</div>

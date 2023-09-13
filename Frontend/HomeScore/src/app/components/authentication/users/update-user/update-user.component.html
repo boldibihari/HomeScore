@@ -1,0 +1,60 @@
+<div *ngIf="isLoading">
+  <loader [type]="'basic'"></loader>
+</div>
+<div class="flex justify-content-center" *ngIf="!isLoading">
+  <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+    <div class="text-center mb-5">
+      <img src="assets/images/HomeScore.jpg" alt="Image" height="100" class="mb-3">
+      <div class="text-900 text-3xl font-medium mb-3">Update your profile</div>
+    </div>
+    <div class="card" *ngIf="showError">
+      <p-messages [(value)]="errorMessage" [enableService]="false" [closable]="true"></p-messages>
+    </div>
+    <div>
+      <form [formGroup]="updateForm" (ngSubmit)="updateUser(updateForm.value)">
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input id="firstName" type="text" formControlName="firstName" pInputText class="w-full" 
+              [ngClass]="{'ng-invalid ng-dirty': validateControl('firstName')}"/>
+            <label for="firstName" class="p-float-label">First name</label>
+          </span>
+          <small *ngIf="validateControl('firstName') && hasError('firstName', 'required')" class="p-error flex justify-content-center">
+            Firstname is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <input id="lastName" type="text" formControlName="lastName" pInputText class="w-full"
+              [ngClass]="{'ng-invalid ng-dirty': validateControl('lastName')}"/>
+            <label for="lastName" class="p-float-label">Last name</label>
+          </span>
+          <small *ngIf="validateControl('lastName') && hasError('lastName', 'required')"class="p-error flex justify-content-center">
+            Lastname is required.
+          </small>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <p-password formControlName="password" [toggleMask]="true" [feedback]="true" [style]="{ width: '100%' }" [inputStyle]="{ width: '100%' }"
+              [ngClass]="{'ng-invalid ng-dirty': validateControl('password')}">
+            </p-password>
+            <label for="password">Password</label>
+          </span>
+        </div>
+        <div class="field my-4">
+          <span class="p-float-label">
+            <p-password formControlName="confirmPassword" [toggleMask]="true" [feedback]="false" [style]="{ width: '100%' }" [inputStyle]="{ width: '100%' }"
+              [ngClass]="{'ng-invalid ng-dirty': validateControl('confirmPassword')}">
+            </p-password>
+            <label for="confirmPassword">Confirmation password</label>
+          </span>
+          <small *ngIf="hasError('confirmPassword', 'mustMatch')" class="p-error flex justify-content-center">
+            Passwords must match.
+          </small>
+        </div>
+        <div class="field flex justify-content-center">
+          <button pButton pRipple label="Update" lass="w-full" type="submit" [disabled]="!updateForm.valid"></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

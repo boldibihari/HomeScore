@@ -1,0 +1,87 @@
+<div *ngIf="isLoading">
+  <loader [type]="'list'"></loader>
+</div>
+<div *ngIf="!isLoading">
+  <div *ngIf="players !== undefined">
+    <p-toolbar>
+      <div class="p-toolbar-group-start">
+        <div class="font-medium text-3xl text-900">Players</div>
+      </div>
+      <div class="p-toolbar-group-end">
+        <span class="p-input-icon-right">
+          <i class="pi pi-search"></i>
+          <input
+            type="search"
+            pInputText
+            placeholder="Search"
+            (input)="onFilter($event, dv)"
+          />
+        </span>
+      </div>
+    </p-toolbar>
+    <p-dataView #dv [value]="players" filterBy="player.playerName">
+      <ng-template let-player pTemplate="listItem">
+        <div class="col-12">
+          <div
+            class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4"
+          >
+            <img
+              class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+              src="assets/images/unknown.png"
+              [alt]="player.player.playerName"
+            />
+            <div
+              class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4"
+            >
+              <div
+                class="flex flex-column align-items-center sm:align-items-start gap-3"
+              >
+                <p-button
+                  styleClass="p-button-raised p-button-text p-button-success p-button-lg p-1"
+                  routerLink="player"
+                  [queryParams]="{
+                    playerId: player.player.playerId,
+                    clubId: player.player.clubId
+                  }"
+                  >{{ player.player.playerName }}
+                </p-button>
+                <!-- <p-image [src]="player.flag" height="20" width="30"></p-image> -->
+                <div class="flex align-items-center gap-3">
+                  <span class="flex align-items-center gap-2">
+                    <i class="pi pi-map-marker"></i>
+                    <span class="font-semibold">{{
+                      player.player.playerCountry
+                    }}</span> </span
+                  ><span class="flex align-items-center gap-2">
+                    <i class="pi pi-tag"></i>
+                    <span class="font-semibold">Player</span>
+                  </span>
+                </div>
+              </div>
+              <div>
+                <div
+                  class="flex sm:flex-column align-items-center sm:align-items-end gap-4 sm:gap-4"
+                >
+                  <p-image [src]="player.flag" height="20" width="30"></p-image>
+                  <ng-container *ngIf="authenticationResponse.isUserAdmin">
+                    <p-button
+                      icon="pi pi-file-edit"
+                      styleClass="p-button-rounded p-button-warning"
+                      routerLink="update"
+                      [queryParams]="{ playerId: player.player.playerId }"
+                    ></p-button>
+                    <p-button
+                      icon="pi pi-trash"
+                      styleClass="p-button-rounded p-button-danger"
+                      (onClick)="deletePlayer(player.player.playerId)"
+                    ></p-button>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
+  </div>
+</div>

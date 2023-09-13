@@ -1,0 +1,78 @@
+<ng-container [ngSwitch]="type">
+  <div *ngSwitchCase="'basic'">
+    <div
+      class="flex justify-content-center align-items-center"
+      style="height: 80vh"
+    >
+      <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="3"
+      ></p-progressSpinner>
+    </div>
+  </div>
+  <div *ngSwitchCase="'profile'">
+    <div class="p-card">
+      <div class="p-card-body"></div>
+    </div>
+  </div>
+  <div *ngSwitchCase="'list'">
+    <div class="card">
+      <div class="border-round border-1 surface-border p-4 surface-card">
+        <ul class="m-0 p-0 list-none">
+          <li class="mb-3">
+            <div class="flex">
+              <p-skeleton size="8rem" styleClass="mr-2"></p-skeleton>
+              <div style="flex: 1">
+                <p-skeleton
+                  width="100%"
+                  height="40%"
+                  styleClass="mb-2"
+                ></p-skeleton>
+                <p-skeleton width="75%"></p-skeleton>
+              </div>
+            </div>
+          </li>
+          <li class="mb-3">
+            <div class="flex">
+              <p-skeleton size="8rem" styleClass="mr-2"></p-skeleton>
+              <div style="flex: 1">
+                <p-skeleton
+                  width="100%"
+                  height="40%"
+                  styleClass="mb-2"
+                ></p-skeleton>
+                <p-skeleton width="75%"></p-skeleton>
+              </div>
+            </div>
+          </li>
+          <li class="mb-3">
+            <div class="flex">
+              <p-skeleton size="8rem" styleClass="mr-2"></p-skeleton>
+              <div style="flex: 1">
+                <p-skeleton
+                  width="100%"
+                  height="40%"
+                  styleClass="mb-2"
+                ></p-skeleton>
+                <p-skeleton width="75%"></p-skeleton>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="flex">
+              <p-skeleton size="8rem" styleClass="mr-2"></p-skeleton>
+              <div style="flex: 1">
+                <p-skeleton
+                  width="100%"
+                  height="40%"
+                  styleClass="mb-2"
+                ></p-skeleton>
+                <p-skeleton width="75%"></p-skeleton>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,20 @@
+<div class="card">
+  <p-menubar [model]="items" [style]="{ height: '50px' }">
+    <ng-template pTemplate="start">
+      <div class="flex flex-row">
+        <a routerLink="/home" style="text-decoration: none;"><h2 class="text-primary mr-2">HOMESCORE</h2></a>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <div class="card flex justify-content-center">
+        <p-button
+          icon="pi pi-search"
+          class="p-2"
+          styleClass="p-button-rounded p-button-primary"
+          (click)="showDialog()"
+        ></p-button>
+      </div> 
+    </ng-template>
+  </p-menubar>
+</div>
+<search [visible]="visible" (visibleChange)="onVisibleChange($event)"></search>

@@ -1,0 +1,180 @@
+<div *ngIf="stadium !== undefined && club !== undefined">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div
+        class="flex flex-row flex-wrap card-container {{
+          club.clubColour | colour
+        }}"
+      >
+        <p-image
+          *ngIf="stadiumImage !== null"
+          [src]="stadiumImage"
+          [alt]="stadium.stadiumName"
+          class="bg-left pt-1 px-1"
+          [preview]="true"
+          height="170"
+          width="170"
+        ></p-image>
+        <p-image
+          *ngIf="stadiumImage === null"
+          class="bg-left pt-1 px-1"
+          src="assets/images/unknown.png"
+          [preview]="true"
+          height="170"
+          width="170"
+        ></p-image>
+        <div style="padding: 1rem">
+          <div class="p-card-title text-5xl">{{ stadium.stadiumName }}</div>
+          <div class="p-card-subtitle">{{ club.clubCity }}</div>
+          <div class="flex">
+            <div class="mr-3 mt-2 font-bold">Club: {{ club.clubName }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="grid">
+      <div class="col-12 md:col-7">
+        <div class="surface-card shadow-2 p-3 border-round">
+          <div class="flex justify-content-between mb-3">
+            <div style="width: 90%">
+              <span class="block text-500 font-semibold text-lg mb-3"
+                >Manager</span
+              >
+              <div
+                class="text-900 font-medium text-xl font-bold text-primary p-1"
+              >
+                Profile
+              </div>
+              <div class="surface-section">
+                <ul class="list-none p-0 m-0">
+                  <li
+                    class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                  >
+                    <div class="text-500 w-6 md:w-4 font-medium">Completed</div>
+                    <div
+                      class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+                    >
+                      {{ stadium.completed }}
+                    </div>
+                  </li>
+                  <li
+                    class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                  >
+                    <div class="text-500 w-6 md:w-4 font-medium">Capacity</div>
+                    <div
+                      class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+                    >
+                      {{ stadium.capacity }}
+                    </div>
+                  </li>
+                  <li
+                    class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap"
+                  >
+                    <div class="text-500 w-6 md:w-4 font-medium">Location</div>
+                    <div
+                      class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+                    >
+                      {{ stadium.location }}
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div
+              class="flex align-items-center justify-content-center bg-primary border-round"
+              style="width: 3rem; height: 3rem"
+            >
+              <i class="pi pi-info-circle text-green-600 text-3xl"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 md:col-5">
+        <div
+          class="surface-card shadow-2 p-3 border-round"
+          *ngIf="club.manager != null"
+        >
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-semibold text-lg mb-3"
+                >Club</span
+              >
+              <div class="flex flex-row flex-wrap">
+                <div *ngIf="clubImage !== null">
+                  <p-image
+                    [src]="clubImage"
+                    width="120px"
+                    [preview]="true"
+                  ></p-image>
+                </div>
+                <div *ngIf="clubImage === null">
+                  <p-image
+                    src="assets/images/unknown.png"
+                    width="120px"
+                    [preview]="true"
+                  ></p-image>
+                </div>
+                <div>
+                  <p-button
+                    styleClass="p-button-raised p-button-text p-button-lg font-bold p-1"
+                    routerLink="/clubs/club"
+                    [queryParams]="{ clubId: club.clubId }"
+                  >
+                    {{ club.clubName }}
+                  </p-button>
+                  <div class="text-400 font-medium text-sm ml-2">
+                    Founded: {{ club.clubFounded }}
+                  </div>
+                  <div class="text-400 font-medium text-sm ml-2">
+                    City: {{ club.clubCity }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex align-items-center justify-content-center bg-primary border-round"
+              style="width: 3rem; height: 3rem"
+            >
+              <i class="pi pi-home text-green-600 text-3xl"></i>
+            </div>
+          </div>
+        </div>
+        <div
+          class="surface-card shadow-2 p-3 border-round"
+          *ngIf="club.manager != null"
+        >
+          <div class="flex justify-content-between mb-3">
+            <div>
+              <span class="block text-500 font-semibold text-lg mb-3"
+                >Location</span
+              >
+              <div class="flex flex-row flex-wrap">
+                <div
+                  class="text-900 font-medium text-xl font-bold text-primary p-1"
+                >
+                  {{ stadium.location }}
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex align-items-center justify-content-center bg-primary border-round"
+              style="width: 3rem; height: 3rem"
+            >
+              <i class="pi pi-map-marker text-green-600 text-3xl"></i>
+            </div>
+          </div>
+          <div class="card flex justify-content-center">
+            <iframe
+              [src]="stadiumMap"
+              class="mt-2 ml-2"
+              height="200px"
+              width="100%"
+              style="border: none"
+            >
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>
